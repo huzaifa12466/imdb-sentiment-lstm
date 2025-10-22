@@ -9,6 +9,7 @@ import numpy as np
 # NLTK setup
 # ---------------------------
 nltk.download('punkt')
+nltk.download('punkt_tab')
 nltk.download('stopwords')
 
 stop_words = set(stopwords.words('english'))
