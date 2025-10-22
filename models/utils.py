@@ -5,6 +5,10 @@ from nltk.tokenize import word_tokenize
 import torch
 import numpy as np
 
+
+# ---------------------------
+# NLTK setup
+# ---------------------------
 nltk.download('punkt')
 nltk.download('stopwords')
 
@@ -12,8 +16,9 @@ stop_words = set(stopwords.words('english'))
 negations = {'not', 'no', 'never'}
 stop_words = stop_words - negations
 
-vocab = {'<UNK>': 0}
-
+# ---------------------------
+# Text processing functions
+# ---------------------------
 def clean_text(text):
     text = text.lower()
     text = re.sub(r'<.*?>', ' ', text)
@@ -23,18 +28,15 @@ def clean_text(text):
     tokens = [word for word in tokens if word not in stop_words]
     return ' '.join(tokens).strip()
 
-def build_vocab(sentence):
-    for word in word_tokenize(sentence):
-        if word not in vocab:
-            vocab[word] = len(vocab)
-
-def text_to_indices(text):
+def text_to_indices(text, vocab):
     indexed_text = []
     for word in word_tokenize(text):
-        indexed_text.append(vocab.get(word, vocab['<UNK>']))
+        indexed_text.append(vocab.get(word, vocab.get('<UNK>', 0)))
     return indexed_text
 
-def load_glove_embeddings(glove_path, embedding_dim=100):
+def load_glove_embeddings(glove_path, embedding_dim=100, vocab=None):
+    if vocab is None:
+        raise ValueError("vocab must be provided to load embeddings")
     embeddings = np.random.uniform(-0.25, 0.25, (len(vocab), embedding_dim))
     with open(glove_path, 'r', encoding='utf8') as f:
         for line in f:
