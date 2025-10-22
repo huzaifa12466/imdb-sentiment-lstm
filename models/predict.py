@@ -7,14 +7,13 @@ from models.utils import text_to_indices, vocab, load_glove_embeddings
 # Device setup
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-# Paths and Google Drive URLs
-os.makedirs("models", exist_ok=True)
+# Google Drive URLs (root folder)
 MODEL_URL = "https://drive.google.com/uc?id=1QWN7dK5YZnPKAbFi2wFHBAQsaM4-2LzA"
 GLOVE_URL = "https://drive.google.com/uc?id=1EhVFs7mREZcvDuUIqX5fxLXyrSbRbw_F"
 MODEL_PATH = "best_model.pth"
 GLOVE_PATH = "glove.6B.100d.txt"
 
-# Download if not exists
+# Download if missing
 if not os.path.exists(MODEL_PATH):
     gdown.download(MODEL_URL, MODEL_PATH, quiet=False)
 
@@ -44,3 +43,4 @@ def predict_sentiment(text: str):
         output = model(tensor)
         prob = torch.sigmoid(output).item()
     return {"probability": prob, "sentiment": "positive" if prob >= 0.5 else "negative"}
+
